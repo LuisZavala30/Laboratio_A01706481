@@ -14,12 +14,8 @@ def convolution(image,kernel):
 	"""Aplica una convolucion sin padding y 
 	devuelve la matriz resultante de la operación"""
 
-	image_row, image_col = image.shape 		#Asigna alto y ancho de la imagen
-	Filter_row, Filter_col = Filter.shape   #Asigna alto y ancho del filtro
-	output_row, output_col = output.shape	#Asigna alto y ancho de matriz de salida
-
-	for row in range(output_row):		#Tamaño de matriz de salida como maximo del ciclo
-	    for col in range(output_col):
+	for row in range(output_x):		#Tamaño de matriz de salida como maximo del ciclo
+	    for col in range(output_y):
 	        output[row, col] = conv_helper(image[row:row + Filter_row, col:col + Filter_col],Filter)
 
 	return output
@@ -38,10 +34,12 @@ image = np.array([	[1,2,3,4,5,6],		#Matriz o imagen
 	])
 
 
-output = np.array([	[0,0,0,0],	#Matriz para guardar el resultado de convolucion
-					[0,0,0,0],
-					[0,0,0,0],
-	]) 
+image_row, image_col = image.shape 		#Asigna alto y ancho de la imagen
+Filter_row, Filter_col = Filter.shape   #Asigna alto y ancho del filtro
+
+output_x = int((image_row-(Filter_row/2)))	#Calcula dimension x de matriz de salida
+output_y = int((image_col-(Filter_col/2)))	#Calcula dimension y de matriz de salida
+output = np.zeros((output_x,output_y))		#Inicializa en 0 matriz de salida	
 
 print(convolution(image,Filter))
 
