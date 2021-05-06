@@ -1,4 +1,8 @@
 import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+import argparse
+
 def conv_helper(fragment, kernel):
     
 	f_row, f_col = fragment.shape
@@ -13,6 +17,9 @@ def conv_helper(fragment, kernel):
 def convolution(image,kernel):
 	"""Aplica una convolucion y devuelve la 
 	matriz resultante de la operación con padding"""
+
+	if len(image.shape) == 3:							#Pasa la imagen a escala de grises
+		image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	
 	image_row, image_col = image.shape 		#Asigna alto y ancho de la imagen
 	kernel_row, kernel_col = Filter.shape   #Asigna alto y ancho del filtro
@@ -28,24 +35,23 @@ def convolution(image,kernel):
 	for row in range(output_x):		#Tamaño de matriz de salida como maximo del ciclo
 		for col in range(output_y):
 			output[row, col] = conv_helper(padded_image[row:row + kernel_row, col:col + kernel_col],kernel)
+	cv2.imwrite("output_image.jpg",output)
+
 	return output
 
 
 
 """Declaración de matrices y llamado a la funcion convolution"""
-
-Filter = np.array([ [1,1,1],	#Matriz de filtro o kernel
-					[0,0,0],
-					[2,10,3],
-	])
-
-image = np.array([	[1,2,3,4,5,6],		#Matriz o imagen
-					[7,8,9,10,11,12],
-					[0,0,1,16,17,18],
-					[0,1,0,7,23,24],
-					[1,7,6,5,4,3],
-	])
+Filter = np.array([
+	[1/9, 1/9, 1/9],
+	[1/9, 1/9, 1/9],
+	[1/9, 1/9, 1/9]
+    ])
+ap = argparse.ArgumentParser()
+ap.add_argument("-i", "--image", required=True, help="Path to the image")
+args = vars(ap.parse_args())
+image = cv2.imread(args["image"]) 
 
 
 
-print(convolution(image,Filter))
+convolution(image,Filter)
